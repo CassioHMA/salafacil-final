@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Usuários</h1>
+    <button onclick="fetchUsuarios()">Carregar Usuários</button>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>CPF</th>
+            </tr>
+        </thead>
+        <tbody id="usuarios-tbody">
+            <!-- Os usuários serão adicionados aqui -->
+        </tbody>
+    </table>
+
+    <script>
+        // Função para buscar usuários da API e preencher a tabela
+        function fetchUsuarios() {
+            fetch('http://localhost:8080/usuario')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao consultar a API');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tbody = document.getElementById('usuarios-tbody');
+                    tbody.innerHTML = ''; // Limpa qualquer conteúdo existente na tabela
+                    
+                    // Itera sobre os dados e adiciona cada usuário na tabela
+                    data.forEach(usuario => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${usuario.id}</td>
+                            <td>${usuario.nome}</td>
+                            <td>${usuario.email}</td>
+                            <td>${usuario.phone}</td>
+                            <td>${usuario.cpf}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+        }
+    </script>
+</body>
+</html>
